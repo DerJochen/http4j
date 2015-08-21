@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.jochor.http</groupId>
+	<artifactId>http4j</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<!-- Type 0 -->
+
+	<parent>
+		<groupId>de.jochor.maven</groupId>
+		<artifactId>super-pom</artifactId>
+		<version>0.2.0</version>
+	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<!-- Type 0 -->
+		</dependency>
+
+		<!-- Test Dependencies -->
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- Type 0 -->
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.16.4 </version>
+				<!-- Type 0 -->
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Test dependencies -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<!-- Type 0 -->
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>maven2-repository.jochor.de</id>
+			<url>http://maven.jochor.de/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+
+</project>
