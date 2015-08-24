@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -20,6 +21,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import de.jochor.lib.http.HttpClient;
 import de.jochor.lib.http.model.GetRequest;
 import de.jochor.lib.http.model.PostRequest;
+import de.jochor.lib.http.model.PutRequest;
 
 /**
  *
@@ -29,6 +31,9 @@ import de.jochor.lib.http.model.PostRequest;
  */
 public class HttpClientApacheCommens implements HttpClient {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String get(GetRequest request) {
 		URI uri = request.getUri();
@@ -41,6 +46,9 @@ public class HttpClientApacheCommens implements HttpClient {
 		return response;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String post(PostRequest request) {
 		URI uri = request.getUri();
@@ -48,6 +56,26 @@ public class HttpClientApacheCommens implements HttpClient {
 		String body = request.getBody();
 
 		HttpPost httpRequest = new HttpPost(uri);
+
+		// TODO get content type from request
+		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
+		httpRequest.setEntity(entity);
+
+		String response = executeRequest(httpRequest, expectedStatus);
+
+		return response;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String put(PutRequest request) {
+		URI uri = request.getUri();
+		int expectedStatus = request.getExpectedStatus();
+		String body = request.getBody();
+
+		HttpPut httpRequest = new HttpPut(uri);
 
 		// TODO get content type from request
 		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);

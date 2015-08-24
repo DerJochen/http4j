@@ -9,6 +9,7 @@ import de.jochor.lib.http.HttpClient;
 import de.jochor.lib.http.HttpClientBuilder;
 import de.jochor.lib.http.model.GetRequest;
 import de.jochor.lib.http.model.PostRequest;
+import de.jochor.lib.http.model.PutRequest;
 
 /**
  *
@@ -19,7 +20,7 @@ import de.jochor.lib.http.model.PostRequest;
 public class HttpClientJUnit implements HttpClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
-	
+
 	static {
 		try {
 			Field classField = HttpClientBuilder.class.getDeclaredField("httpClientClass");
@@ -30,10 +31,13 @@ public class HttpClientJUnit implements HttpClient {
 		}
 	}
 
-	public static  void addResponse(String response){
+	public static void addResponse(String response) {
 		responses.add(response);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String get(GetRequest request) {
 		URI uri = request.getUri();
@@ -43,6 +47,9 @@ public class HttpClientJUnit implements HttpClient {
 		return response;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String post(PostRequest request) {
 		URI uri = request.getUri();
@@ -53,15 +60,30 @@ public class HttpClientJUnit implements HttpClient {
 		return response;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String put(PutRequest request) {
+		URI uri = request.getUri();
+		String body = request.getBody();
+
+		String response = executeRequest(uri, body);
+
+		return response;
+	}
+
 	protected String executeRequest(URI uri, String body) {
 		String response = responses.poll();
-		
+
 		if (response != null) {
 			return response;
 		}
-		
+
 		String msg = "No more answers configured. Request was: '" + uri.toString();
-		if (body!=null)msg+=" - "+body;
+		if (body != null) {
+			msg += " - " + body;
+		}
 		throw new IllegalStateException(msg);
 	}
 

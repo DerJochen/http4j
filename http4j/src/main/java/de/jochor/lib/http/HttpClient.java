@@ -2,6 +2,7 @@ package de.jochor.lib.http;
 
 import de.jochor.lib.http.model.GetRequest;
 import de.jochor.lib.http.model.PostRequest;
+import de.jochor.lib.http.model.PutRequest;
 
 /**
  *
@@ -14,5 +15,7 @@ public interface HttpClient {
 	String get(GetRequest request);
 
 	String post(PostRequest request);
+
+	String put(PutRequest request);
 
 }
