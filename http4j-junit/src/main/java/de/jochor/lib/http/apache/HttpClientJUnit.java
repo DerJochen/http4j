@@ -21,7 +21,7 @@ public class HttpClientJUnit implements HttpClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
 
-	static {
+	public static void init() {
 		try {
 			Field classField = HttpClientBuilder.class.getDeclaredField("httpClientClass");
 			classField.setAccessible(true);

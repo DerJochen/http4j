@@ -24,6 +24,9 @@ public class HttpClientBuilder {
 	}
 
 	public static HttpClient create() {
+		if (httpClientClass == null) {
+			throw new IllegalStateException("No service class set");
+		}
 		try {
 			HttpClient httpClient = httpClientClass.newInstance();
 			return httpClient;

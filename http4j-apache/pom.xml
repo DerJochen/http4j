@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.jochor.http</groupId>
+	<groupId>de.jochor.lib.http</groupId>
 	<artifactId>http4j-apache</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<!-- Type T -->
@@ -20,7 +20,7 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>de.jochor.http</groupId>
+			<groupId>de.jochor.lib.http</groupId>
 			<artifactId>http4j</artifactId>
 			<version>${version.http4j}</version>
 			<!-- Type 0 -->
