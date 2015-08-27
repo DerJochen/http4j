@@ -1,6 +1,5 @@
 package de.jochor.lib.http.apache;
 
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -22,13 +21,7 @@ public class HttpClientJUnit implements HttpClient {
 	protected static final Queue<String> responses = new LinkedList<>();
 
 	public static void init() {
-		try {
-			Field classField = HttpClientBuilder.class.getDeclaredField("httpClientClass");
-			classField.setAccessible(true);
-			classField.set(null, HttpClientJUnit.class);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		System.setProperty(HttpClientBuilder.CLASS_NAME_PROPERTY, HttpClientJUnit.class.getName());
 	}
 
 	public static void addResponse(String response) {

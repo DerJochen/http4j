@@ -13,7 +13,18 @@
 		<version>0.2.0</version>
 	</parent>
 	
+	<properties>
+		<version.service-builder>0.0.1-SNAPSHOT</version.service-builder>
+	</properties>
+
 	<dependencies>
+		<dependency>
+			<groupId>de.jochor.lib.builder</groupId>
+			<artifactId>service-builder</artifactId>
+			<version>${version.service-builder}</version>
+			<!-- Type 0 -->
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -21,7 +32,7 @@
 		</dependency>
 
 		<!-- Test Dependencies -->
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
