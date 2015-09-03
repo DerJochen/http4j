@@ -1,14 +1,13 @@
-package de.jochor.lib.http.apache;
+package de.jochor.lib.http4j.apache;
 
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import de.jochor.lib.http.HttpClient;
-import de.jochor.lib.http.HttpClientBuilder;
-import de.jochor.lib.http.model.GetRequest;
-import de.jochor.lib.http.model.PostRequest;
-import de.jochor.lib.http.model.PutRequest;
+import de.jochor.lib.http4j.HttpClient;
+import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PostRequest;
+import de.jochor.lib.http4j.model.PutRequest;
 
 /**
  *
@@ -19,10 +18,6 @@ import de.jochor.lib.http.model.PutRequest;
 public class HttpClientJUnit implements HttpClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
-
-	public static void init() {
-		System.setProperty(HttpClientBuilder.CLASS_NAME_PROPERTY, HttpClientJUnit.class.getName());
-	}
 
 	public static void addResponse(String response) {
 		responses.add(response);

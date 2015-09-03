@@ -1,4 +1,4 @@
-package de.jochor.lib.http.model;
+package de.jochor.lib.http4j.model;
 
 import java.net.URI;
 

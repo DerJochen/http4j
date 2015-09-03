@@ -1,4 +1,4 @@
-package de.jochor.lib.http.model;
+package de.jochor.lib.http4j.model;
 
 import java.net.URI;
 
@@ -15,12 +15,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class PostRequest {
+public class GetRequest {
 
 	private final URI uri;
-
+	
 	private int expectedStatus = 200;
-
-	private String body;
 
 }

@@ -1,8 +1,8 @@
-package de.jochor.lib.http;
+package de.jochor.lib.http4j;
 
-import de.jochor.lib.http.model.GetRequest;
-import de.jochor.lib.http.model.PostRequest;
-import de.jochor.lib.http.model.PutRequest;
+import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PostRequest;
+import de.jochor.lib.http4j.model.PutRequest;
 
 /**
  *

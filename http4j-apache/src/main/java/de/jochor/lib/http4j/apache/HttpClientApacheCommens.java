@@ -1,4 +1,4 @@
-package de.jochor.lib.http.apache;
+package de.jochor.lib.http4j.apache;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,10 +18,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import de.jochor.lib.http.HttpClient;
-import de.jochor.lib.http.model.GetRequest;
-import de.jochor.lib.http.model.PostRequest;
-import de.jochor.lib.http.model.PutRequest;
+import de.jochor.lib.http4j.HttpClient;
+import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PostRequest;
+import de.jochor.lib.http4j.model.PutRequest;
 
 /**
  *
