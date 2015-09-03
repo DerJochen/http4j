@@ -17,7 +17,7 @@
 		<version.http4j>0.0.1-SNAPSHOT</version.http4j>
 		<version.junit>4.12</version.junit>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>de.jochor.lib.http</groupId>
@@ -29,10 +29,20 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
 			<!-- Type T -->
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${version.junit}</version>
+				<!-- Type T -->
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<repositories>
 		<repository>
