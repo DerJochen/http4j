@@ -8,8 +8,10 @@ import lombok.Setter;
 
 /**
  *
+ * <p>
+ * <b>Started:</b> 2015-08-19
+ * </p>
  * @author Jochen Hormes
- * @start 2015-08-19
  *
  */
 @Getter

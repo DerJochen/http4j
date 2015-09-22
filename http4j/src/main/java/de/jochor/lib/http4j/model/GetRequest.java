@@ -8,8 +8,11 @@ import lombok.Setter;
 
 /**
  *
+ * <p>
+ * <b>Started:</b> 2015-08-19
+ * </p>
+ * 
  * @author Jochen Hormes
- * @start 2015-08-19
  *
  */
 @Getter
@@ -18,7 +21,7 @@ import lombok.Setter;
 public class GetRequest {
 
 	private final URI uri;
-	
+
 	private int expectedStatus = 200;
 
 }

@@ -16,7 +16,7 @@
 		<version.http4j>0.0.1-SNAPSHOT</version.http4j>
 		<version.apache.httpcomponents>4.5</version.apache.httpcomponents>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>de.jochor.lib.http</groupId>

@@ -25,8 +25,10 @@ import de.jochor.lib.http4j.model.PutRequest;
 
 /**
  *
+ * <p>
+ * <b>Started:</b> 2015-08-19
+ * </p>
  * @author Jochen Hormes
- * @start 2015-08-19
  *
  */
 public class HTTPClientApacheCommens implements HTTPClient {
