@@ -10,7 +10,7 @@ import de.jochor.lib.http4j.model.PutRequest;
  * @start 2015-08-19
  *
  */
-public interface HttpClient {
+public interface HTTPClient {
 
 	String get(GetRequest request);
 

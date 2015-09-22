@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import de.jochor.lib.http4j.HttpClient;
+import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -15,7 +15,7 @@ import de.jochor.lib.http4j.model.PutRequest;
  * @start 2015-08-21
  *
  */
-public class HttpClientJUnit implements HttpClient {
+public class HTTPClientJUnit implements HTTPClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
 

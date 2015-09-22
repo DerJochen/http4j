@@ -18,7 +18,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import de.jochor.lib.http4j.HttpClient;
+import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -29,7 +29,7 @@ import de.jochor.lib.http4j.model.PutRequest;
  * @start 2015-08-19
  *
  */
-public class HttpClientApacheCommens implements HttpClient {
+public class HTTPClientApacheCommens implements HTTPClient {
 
 	/**
 	 * {@inheritDoc}
