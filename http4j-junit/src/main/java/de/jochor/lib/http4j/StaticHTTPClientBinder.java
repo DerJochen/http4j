@@ -1,6 +1,6 @@
 package de.jochor.lib.http4j;
 
-import de.jochor.lib.http4j.apache.HTTPClientJUnit;
+import de.jochor.lib.http4j.junit.HTTPClientJUnit;
 
 /**
  *
