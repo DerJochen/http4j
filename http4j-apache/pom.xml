@@ -13,7 +13,7 @@
 	</parent>
 
 	<properties>
-		<version.http4j>0.0.1-SNAPSHOT</version.http4j>
+		<version.http4j>${project.version}</version.http4j>
 		<version.apache.httpcomponents>4.5</version.apache.httpcomponents>
 	</properties>
 

@@ -13,7 +13,7 @@
 	</parent>
 
 	<properties>
-		<version.http4j>0.0.1-SNAPSHOT</version.http4j>
+		<version.http4j>${project.version}</version.http4j>
 		<version.junit>4.12</version.junit>
 	</properties>
 
