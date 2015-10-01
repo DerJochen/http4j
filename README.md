@@ -25,7 +25,7 @@ Abstraction layer project for HTTP client calls and two adapters for external pr
 </dependency>
 ```
 
-#### Adapter implementation for jUnit
+#### Adapter implementation for jUnit v4.12
 
 ```xml
 <dependency>
