@@ -1,7 +1,9 @@
 package de.jochor.lib.http4j.junit;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -29,6 +31,8 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
 
+	protected static final Queue<String[]> expectedParams = new LinkedList<>();
+
 	/**
 	 * Adds an expected header by name and value. Any request without those headers will receive a 401 response.
 	 *
@@ -50,13 +54,16 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	/**
 	 * Adds a predefined response to the response queue. On every request the next response is popped from the queue and
-	 * returned.
+	 * returned. Optionally multiple parameters with values can be defined as to be expected in the request.
 	 *
 	 * @param response
 	 *            Response to queue
+	 * @param expectedParams
+	 *            Parameters and values to be expected (optional)
 	 */
-	public static void addResponse(String response) {
+	public static void addResponse(String response, String... expectedParams) {
 		responses.add(response);
+		HTTPClientJUnit.expectedParams.add(expectedParams);
 	}
 
 	/**
@@ -99,13 +106,18 @@ public class HTTPClientJUnit implements HTTPClient {
 		int expectedStatus = request.getExpectedStatus();
 
 		int responseStatus = checkHeaders(headers) ? 200 : 401;
-
+		if (!checkParameters(uri, body)) {
+			responseStatus = 401;
+		}
 		if (responseStatus != expectedStatus) {
-			throw new IllegalStateException("Expected HTTP response status " + expectedStatus + " " + "but instead got [" + responseStatus + "]");
+			throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] but instead got [" + responseStatus + "]");
+		}
+
+		if (responseStatus != 200) {
+			return "";
 		}
 
 		String response = responses.poll();
-
 		if (response != null) {
 			return response;
 		}
@@ -129,6 +141,30 @@ public class HTTPClientJUnit implements HTTPClient {
 			}
 		}
 		return true;
+	}
+
+	private boolean checkParameters(URI uri, String body) {
+		HashSet<String> parameters = new HashSet<>();
+
+		String query = uri.getQuery();
+		if (query != null) {
+			String[] queryParts = query.split("&");
+			parameters.addAll(Arrays.asList(queryParts));
+		}
+
+		if (body != null) {
+			String json = body.trim();
+			String jsonBody = json.substring(1, json.length() - 1);
+			jsonBody = jsonBody.replaceAll("\"", "").replaceAll(":", "=");
+			String[] jsonParts = jsonBody.split("\\s*,\\s*");
+			parameters.addAll(Arrays.asList(jsonParts));
+		}
+
+		String[] expectedParams = HTTPClientJUnit.expectedParams.poll();
+
+		boolean expectedParamsFound = parameters.containsAll(Arrays.asList(expectedParams));
+
+		return expectedParamsFound;
 	}
 
 }
