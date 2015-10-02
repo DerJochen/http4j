@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import org.junit.Assert;
+
 import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.BaseRequest;
 import de.jochor.lib.http4j.model.GetRequest;
@@ -104,9 +106,11 @@ public class HTTPClientJUnit implements HTTPClient {
 		URI uri = request.getUri();
 		HashMap<String, String> headers = request.getHeaders();
 		int expectedStatus = request.getExpectedStatus();
+		boolean expect200 = expectedStatus == 200;
 
-		int responseStatus = checkHeaders(headers) ? 200 : 401;
-		if (!checkParameters(uri, body)) {
+		int responseStatus = 200;
+
+		if (!checkHeaders(headers, expect200) || !checkParameters(uri, body, expect200)) {
 			responseStatus = 401;
 		}
 		if (responseStatus != expectedStatus) {
@@ -129,21 +133,29 @@ public class HTTPClientJUnit implements HTTPClient {
 		throw new IllegalStateException(msg);
 	}
 
-	private boolean checkHeaders(HashMap<String, String> headers) {
+	private boolean checkHeaders(HashMap<String, String> headers, boolean expect200) {
 		for (Entry<String, String> expected : expectedHeaders.entrySet()) {
 			String name = expected.getKey();
 			String value = expected.getValue();
 
 			String actualValue = headers.get(name);
 
-			if (value != null && !value.equals(actualValue) || actualValue == null) {
+			if (expect200) {
+				Assert.assertEquals("Header '" + name + "'", value, actualValue);
+			} else if (value != null && !value.equals(actualValue) || actualValue == null) {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
-	private boolean checkParameters(URI uri, String body) {
+	private boolean checkParameters(URI uri, String body, boolean expect200) {
+		String[] expectedParams = HTTPClientJUnit.expectedParams.poll();
+		if (expectedParams.length == 0) {
+			return true;
+		}
+
 		HashSet<String> parameters = new HashSet<>();
 
 		String query = uri.getQuery();
@@ -160,11 +172,15 @@ public class HTTPClientJUnit implements HTTPClient {
 			parameters.addAll(Arrays.asList(jsonParts));
 		}
 
-		String[] expectedParams = HTTPClientJUnit.expectedParams.poll();
-
-		boolean expectedParamsFound = parameters.containsAll(Arrays.asList(expectedParams));
+		boolean expectedParamsFound = true;
+		if (expect200) {
+			for (String expectedParam : expectedParams) {
+				Assert.assertTrue("Parameter " + expectedParam, parameters.contains(expectedParam));
+			}
+		} else {
+			expectedParamsFound = parameters.containsAll(Arrays.asList(expectedParams));
+		}
 
 		return expectedParamsFound;
 	}
-
 }
