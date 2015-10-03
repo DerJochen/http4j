@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>http4j-tests</artifactId>
+	<!-- Type 0 -->
+
+	<parent>
+		<groupId>de.jochor.lib.http</groupId>
+		<artifactId>http4j-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<version.lombok>1.16.4</version.lombok>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.jochor.lib.http</groupId>
+			<artifactId>http4j</artifactId>
+			<version>${project.version}</version>
+			<!-- Type 0 -->
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- Type 0 -->
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${version.lombok}</version>
+			<!-- Type 0 -->
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- No Test Dependencies -->
+
+	</dependencies>
+
+</project>
