@@ -4,10 +4,11 @@ import de.jochor.lib.servicefactory.ServiceFactory;
 
 /**
  * Factory for HTTP Client adapters. Use the static {@link #create()} method to retrieve an instance.
- * 
+ *
  * <p>
  * <b>Started:</b> 2015-08-19
  * </p>
+ * 
  * @author Jochen Hormes
  *
  */
