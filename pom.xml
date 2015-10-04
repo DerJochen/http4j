@@ -22,6 +22,8 @@
 
 		<module>http4j-apache</module>
 		<module>http4j-junit</module>
+
+		<module>http4j-tests</module>
 	</modules>
 
 	<properties>
