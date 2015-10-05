@@ -100,6 +100,8 @@ public class HTTPClientApacheCommens implements HTTPClient {
 			try (InputStream content = entity.getContent()) {
 				byte[] responseBody = new byte[(int) entity.getContentLength()];
 
+				content.read(responseBody);
+
 				Charset charset;
 				Header encodingHeader = entity.getContentEncoding();
 				if (encodingHeader != null) {

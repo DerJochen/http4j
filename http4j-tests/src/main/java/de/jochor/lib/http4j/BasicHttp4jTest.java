@@ -4,15 +4,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
+import org.mockserver.mockserver.MockServer;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import de.jochor.lib.http4j.model.GetRequest;
 
 /**
@@ -29,14 +33,31 @@ public class BasicHttp4jTest {
 
 	private HTTPClient httpClient;
 
+	private int freePort;
+
+	private MockServer mockServer;
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
+		// Switch off outputs from the service factory
 		System.setProperty("jochor.servicefactory.silence", "true");
+
+		// Switch off outputs from MockServer
+		Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		root.setLevel(Level.WARN);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		httpClient = HTTPClientFactory.create();
+
+		freePort = pickFreePort();
+		mockServer = new MockServer(freePort);
+	}
+
+	@After
+	public void tearDown() {
+		mockServer.stop();
 	}
 
 	@Test
@@ -44,23 +65,23 @@ public class BasicHttp4jTest {
 		Assert.assertNotNull(httpClient);
 	}
 
-	@Ignore
 	@Test
 	public void testSimpleGet() {
 		String testContent = "test content";
-		// MockServer mockServer = new MockServer(8080);
-		MockServerClient mockServerClient = new MockServerClient("localhost", 8080);
-		mockServerClient.when(new HttpRequest().withMethod("GET").withPath("/")).respond(new HttpResponse().withBody(testContent));
 
-		GetRequest request = new GetRequest(URI.create("TODO"));
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 
 		String content = httpClient.get(request);
 
 		Assert.assertEquals(testContent, content);
 	}
 
-	private static int pickOpenPort() {
-		try (final ServerSocket socket = new ServerSocket(0)) {
+	private static int pickFreePort() {
+		try (ServerSocket socket = new ServerSocket(0)) {
 			return socket.getLocalPort();
 		} catch (IOException ioe) {
 			throw new RuntimeException(ioe);
