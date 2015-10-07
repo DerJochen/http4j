@@ -13,8 +13,8 @@
 	</parent>
 
 	<properties>
-		<version.lombok>1.16.4</version.lombok>
 		<version.mockserver>3.10.0</version.mockserver>
+		<version.lombok>1.16.4</version.lombok>
 	</properties>
 
 	<dependencies>
@@ -36,6 +36,7 @@
 			<groupId>org.mock-server</groupId>
 			<artifactId>mockserver-netty</artifactId>
 			<version>${version.mockserver}</version>
+			<!-- Type T -->
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -56,5 +57,38 @@
 		<!-- No Test Dependencies -->
 
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>never</phase>
+						<configuration>
+							<finalName>unwanted</finalName>
+							<classifier>unwanted</classifier>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

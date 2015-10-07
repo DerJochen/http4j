@@ -37,6 +37,9 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	/**
 	 * Adds an expected header by name and value. Any request without those headers will receive a 401 response.
+	 * <p>
+	 * A fluent API would be a better solution to configure expectations and results, but for now this works.
+	 * </p>
 	 *
 	 * @param name
 	 *            Header name
@@ -57,6 +60,9 @@ public class HTTPClientJUnit implements HTTPClient {
 	/**
 	 * Adds a predefined response to the response queue. On every request the next response is popped from the queue and
 	 * returned. Optionally multiple parameters with values can be defined as to be expected in the request.
+	 * <p>
+	 * A fluent API would be a better solution to configure expectations and results, but for now this works.
+	 * </p>
 	 *
 	 * @param response
 	 *            Response to queue

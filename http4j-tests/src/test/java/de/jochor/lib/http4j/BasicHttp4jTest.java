@@ -29,7 +29,7 @@ import de.jochor.lib.http4j.model.GetRequest;
  * @author Jochen Hormes
  *
  */
-public class BasicHttp4jTest {
+public abstract class BasicHttp4jTest {
 
 	private HTTPClient httpClient;
 
