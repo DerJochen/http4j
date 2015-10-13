@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.servicefactory.ServiceFactory;
 
 /**
  * Test for HTTP client adapter implementations.
@@ -40,7 +41,7 @@ public class BasicHttp4jTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		// Switch off outputs from the service factory
-		System.setProperty("jochor.servicefactory.silence", "true");
+		System.setProperty(ServiceFactory.SILENT_MODE, "true");
 
 		// Switch off outputs from MockServer
 		Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -70,8 +71,8 @@ public class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-				.when(HttpRequest.request("/").withMethod("GET")) //
-				.respond(HttpResponse.response(testContent));
+		.when(HttpRequest.request("/").withMethod("GET")) //
+		.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 
