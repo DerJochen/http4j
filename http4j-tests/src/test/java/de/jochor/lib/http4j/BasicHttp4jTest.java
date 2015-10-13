@@ -30,7 +30,7 @@ import de.jochor.lib.servicefactory.ServiceFactory;
  * @author Jochen Hormes
  *
  */
-public class BasicHttp4jTest {
+public abstract class BasicHttp4jTest {
 
 	private HTTPClient httpClient;
 

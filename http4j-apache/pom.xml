@@ -31,14 +31,23 @@
 			<version>${version.apache.httpcomponents}</version>
 			<!-- Type T -->
 		</dependency>
-		
+
 		<!-- Test Dependencies -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- Type 0 -->
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>de.jochor.lib.http</groupId>
 			<artifactId>http4j-tests</artifactId>
 			<version>${version.http4j}</version>
 			<!-- Type 0 -->
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
