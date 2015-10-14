@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PostRequest;
+import de.jochor.lib.http4j.model.PutRequest;
 import de.jochor.lib.servicefactory.ServiceFactory;
 
 /**
@@ -30,7 +32,7 @@ import de.jochor.lib.servicefactory.ServiceFactory;
  * @author Jochen Hormes
  *
  */
-public abstract class BasicHttp4jTest {
+public class BasicHttp4jTest {
 
 	private HTTPClient httpClient;
 
@@ -71,8 +73,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 
@@ -80,6 +82,58 @@ public abstract class BasicHttp4jTest {
 
 		Assert.assertEquals(testContent, content);
 	}
+
+	@Test
+	public void testSimplePost() {
+		String testContent = "test content";
+		String testBody = "test body";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("POST")) //
+				.respond(HttpResponse.response(testContent + " - " + testBody));
+
+		PostRequest request = new PostRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setBody(testBody);
+
+		String content = httpClient.post(request);
+
+		Assert.assertEquals(testContent + " - " + testBody, content);
+	}
+
+	@Test
+	public void testSimplePut() {
+		String testContent = "test content";
+		String testBody = "test body";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("PUT")) //
+				.respond(HttpResponse.response(testContent + " - " + testBody));
+
+		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setBody(testBody);
+
+		String content = httpClient.put(request);
+
+		Assert.assertEquals(testContent + " - " + testBody, content);
+	}
+
+	@Test
+	public void testWrongMethod() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("PUT")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setExpectedStatus(404); // wrong method, so nothing should be found
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals("", content);
+	}
+	
+	// TODO tests with expected parameters or headers
 
 	private static int pickFreePort() {
 		try (ServerSocket socket = new ServerSocket(0)) {

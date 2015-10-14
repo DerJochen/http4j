@@ -28,6 +28,7 @@ import de.jochor.lib.http4j.model.PutRequest;
  * <p>
  * <b>Started:</b> 2015-08-19
  * </p>
+ * 
  * @author Jochen Hormes
  *
  */
@@ -76,6 +77,9 @@ public class HTTPClientApacheCommens implements HTTPClient {
 		URI uri = request.getUri();
 		int expectedStatus = request.getExpectedStatus();
 		String body = request.getBody();
+		if (body == null) {
+			body = "";
+		}
 
 		HttpPut httpRequest = new HttpPut(uri);
 
