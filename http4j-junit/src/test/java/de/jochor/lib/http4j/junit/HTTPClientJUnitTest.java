@@ -1,16 +1,28 @@
 package de.jochor.lib.http4j.junit;
 
-import static org.junit.Assert.fail;
+import java.net.URI;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.jochor.lib.http4j.HTTPClientFactory;
+import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PostRequest;
+import de.jochor.lib.http4j.model.PutRequest;
 import de.jochor.lib.servicefactory.ServiceFactory;
 
-// TODO Implement test for HTTPClientJUnit
+/**
+ * Test for HTTP client adapter implementations.
+ *
+ * <p>
+ * <b>Started:</b> 2015-10-15
+ * </p>
+ *
+ * @author Jochen Hormes
+ *
+ */
 public class HTTPClientJUnitTest {
 
 	private HTTPClientJUnit httpClient;
@@ -24,48 +36,113 @@ public class HTTPClientJUnitTest {
 	@Before
 	public void setUp() throws Exception {
 		httpClient = (HTTPClientJUnit) HTTPClientFactory.create();
+
+		HTTPClientJUnit.clearExpectedHeaders();
+		HTTPClientJUnit.clearResponses();
 	}
 
-	@Ignore
 	@Test
-	public void testAddExpectedHeader() {
-		fail("Not yet implemented");
+	public void testInstantiation() {
+		Assert.assertNotNull(httpClient);
 	}
 
-	@Ignore
-	@Test
-	public void testClearExpectedHeaders() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	@Test
-	public void testAddResponse() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
 	@Test
 	public void testGet() {
-		fail("Not yet implemented");
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		String content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
 	}
 
-	@Ignore
+	@Test
+	public void testGetWithParams() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent, "test=1");
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		request.setExpectedStatus(404);
+		String content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		request = new GetRequest(URI.create("http://localhost/?test=1"));
+		content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+	}
+
 	@Test
 	public void testPost() {
-		fail("Not yet implemented");
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+
+		PostRequest request = new PostRequest(URI.create("http://localhost/"), "{v=1}");
+		String content = httpClient.post(request);
+		Assert.assertEquals(testContent, content);
 	}
 
-	@Ignore
 	@Test
 	public void testPut() {
-		fail("Not yet implemented");
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+
+		PutRequest request = new PutRequest(URI.create("http://localhost/"), "{v=1}");
+		String content = httpClient.put(request);
+		Assert.assertEquals(testContent, content);
 	}
 
-	@Ignore
 	@Test
-	public void testExecuteRequest() {
-		fail("Not yet implemented");
+	public void testAddExpectedHeader() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+		HTTPClientJUnit.addResponse(testContent);
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		String content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+
+		HTTPClientJUnit.addExpectedHeader("x-test", "value");
+
+		request.setExpectedStatus(404);
+		content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		request.setExpectedStatus(200);
+		request.setHeader("x-test", "value");
+		content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testClearExpectedHeaders() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+		HTTPClientJUnit.addResponse(testContent);
+		HTTPClientJUnit.addExpectedHeader("x-test", "value");
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		request.setExpectedStatus(404);
+		String content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		HTTPClientJUnit.clearExpectedHeaders();
+		request.setExpectedStatus(200);
+		content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testClearResponses() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent);
+		HTTPClientJUnit.addResponse(testContent);
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		httpClient.get(request);
+
+		HTTPClientJUnit.clearResponses();
+
+		httpClient.get(request);
 	}
 
 }

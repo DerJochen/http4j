@@ -3,7 +3,6 @@ package de.jochor.lib.http4j.model;
 import java.net.URI;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -15,11 +14,11 @@ import lombok.Setter;
  *
  */
 @Getter
-@Setter
 public class PostRequest extends BaseRequest {
 
-	public PostRequest(URI uri) {
+	public PostRequest(URI uri, String body) {
 		super(uri);
+		this.body = body;
 	}
 
 	private String body;

@@ -33,7 +33,7 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	protected static final Queue<String> responses = new LinkedList<>();
 
-	protected static final Queue<String[]> expectedParams = new LinkedList<>();
+	protected static final Queue<String[]> expectedParamArrays = new LinkedList<>();
 
 	/**
 	 * Adds an expected header by name and value. Any request without those headers will receive a 401 response.
@@ -71,7 +71,15 @@ public class HTTPClientJUnit implements HTTPClient {
 	 */
 	public static void addResponse(String response, String... expectedParams) {
 		responses.add(response);
-		HTTPClientJUnit.expectedParams.add(expectedParams);
+		expectedParamArrays.add(expectedParams);
+	}
+
+	/**
+	 * Removes all remaining responses.
+	 */
+	public static void clearResponses() {
+		responses.clear();
+		expectedParamArrays.clear();
 	}
 
 	/**
@@ -110,6 +118,15 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	protected String executeRequest(BaseRequest request, String body) {
 		URI uri = request.getUri();
+
+		if (responses.isEmpty()) {
+			String msg = "No more answers configured. Request was: '" + uri.toString();
+			if (body != null) {
+				msg += " - " + body;
+			}
+			throw new IllegalStateException(msg);
+		}
+
 		HashMap<String, String> headers = request.getHeaders();
 		int expectedStatus = request.getExpectedStatus();
 		boolean expect200 = expectedStatus == 200;
@@ -117,7 +134,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		int responseStatus = 200;
 
 		if (!checkHeaders(headers, expect200) || !checkParameters(uri, body, expect200)) {
-			responseStatus = 401;
+			responseStatus = 404;
 		}
 		if (responseStatus != expectedStatus) {
 			throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] but instead got [" + responseStatus + "]");
@@ -128,15 +145,9 @@ public class HTTPClientJUnit implements HTTPClient {
 		}
 
 		String response = responses.poll();
-		if (response != null) {
-			return response;
-		}
+		expectedParamArrays.poll();
 
-		String msg = "No more answers configured. Request was: '" + uri.toString();
-		if (body != null) {
-			msg += " - " + body;
-		}
-		throw new IllegalStateException(msg);
+		return response;
 	}
 
 	private boolean checkHeaders(HashMap<String, String> headers, boolean expect200) {
@@ -144,7 +155,7 @@ public class HTTPClientJUnit implements HTTPClient {
 			String name = expected.getKey();
 			String value = expected.getValue();
 
-			String actualValue = headers.get(name);
+			String actualValue = headers != null ? headers.get(name) : null;
 
 			if (expect200) {
 				Assert.assertEquals("Header '" + name + "'", value, actualValue);
@@ -157,7 +168,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	}
 
 	private boolean checkParameters(URI uri, String body, boolean expect200) {
-		String[] expectedParams = HTTPClientJUnit.expectedParams.poll();
+		String[] expectedParams = expectedParamArrays.peek();
 		if (expectedParams.length == 0) {
 			return true;
 		}

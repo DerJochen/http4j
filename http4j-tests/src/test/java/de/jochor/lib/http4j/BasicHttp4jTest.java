@@ -32,7 +32,7 @@ import de.jochor.lib.servicefactory.ServiceFactory;
  * @author Jochen Hormes
  *
  */
-public class BasicHttp4jTest {
+public abstract class BasicHttp4jTest {
 
 	private HTTPClient httpClient;
 
@@ -92,8 +92,7 @@ public class BasicHttp4jTest {
 				.when(HttpRequest.request("/").withMethod("POST")) //
 				.respond(HttpResponse.response(testContent + " - " + testBody));
 
-		PostRequest request = new PostRequest(URI.create("http://localhost:" + freePort + "/"));
-		request.setBody(testBody);
+		PostRequest request = new PostRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
 
 		String content = httpClient.post(request);
 
@@ -109,8 +108,7 @@ public class BasicHttp4jTest {
 				.when(HttpRequest.request("/").withMethod("PUT")) //
 				.respond(HttpResponse.response(testContent + " - " + testBody));
 
-		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"));
-		request.setBody(testBody);
+		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
 
 		String content = httpClient.put(request);
 
