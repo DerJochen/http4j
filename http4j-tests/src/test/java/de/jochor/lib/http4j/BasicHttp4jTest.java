@@ -132,8 +132,74 @@ public class BasicHttp4jTest {
 
 		Assert.assertEquals("", content);
 	}
-	
-	// TODO tests with expected parameters or headers
+
+	@Test
+	public void testExpectedParameters() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setQueryParameter("test1", "dummy1");
+		request.setQueryParameter("test2", "dummy2");
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedParametersMissing() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("x-test1", "dummy1").withQueryStringParameter("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setQueryParameter("test1", "dummy1");
+		request.setExpectedStatus(404); // header missing, so nothing should be found
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals("", content);
+	}
+
+	@Test
+	public void testExpectedHeaders() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setHeader("x-test1", "dummy1");
+		request.setHeader("x-test2", "dummy2");
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedHeadersMissing() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setHeader("x-test1", "dummy1");
+		request.setExpectedStatus(404); // header missing, so nothing should be found
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals("", content);
+	}
 
 	private static int pickFreePort() {
 		try (ServerSocket socket = new ServerSocket(0)) {

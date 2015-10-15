@@ -3,8 +3,11 @@ package de.jochor.lib.http4j.apache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -12,13 +15,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import de.jochor.lib.http4j.HTTPClient;
+import de.jochor.lib.http4j.model.BaseRequest;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -39,12 +44,9 @@ public class HTTPClientApacheCommens implements HTTPClient {
 	 */
 	@Override
 	public String get(GetRequest request) {
-		URI uri = request.getUri();
-		int expectedStatus = request.getExpectedStatus();
+		HttpGet httpRequest = new HttpGet();
 
-		HttpGet httpRequest = new HttpGet(uri);
-
-		String response = executeRequest(httpRequest, expectedStatus);
+		String response = executeRequest(request, httpRequest);
 
 		return response;
 	}
@@ -54,17 +56,15 @@ public class HTTPClientApacheCommens implements HTTPClient {
 	 */
 	@Override
 	public String post(PostRequest request) {
-		URI uri = request.getUri();
-		int expectedStatus = request.getExpectedStatus();
 		String body = request.getBody();
 
-		HttpPost httpRequest = new HttpPost(uri);
+		HttpPost httpRequest = new HttpPost();
 
 		// TODO get content type from request
 		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
 		httpRequest.setEntity(entity);
 
-		String response = executeRequest(httpRequest, expectedStatus);
+		String response = executeRequest(request, httpRequest);
 
 		return response;
 	}
@@ -74,30 +74,34 @@ public class HTTPClientApacheCommens implements HTTPClient {
 	 */
 	@Override
 	public String put(PutRequest request) {
-		URI uri = request.getUri();
-		int expectedStatus = request.getExpectedStatus();
 		String body = request.getBody();
 		if (body == null) {
 			body = "";
 		}
 
-		HttpPut httpRequest = new HttpPut(uri);
+		HttpPut httpRequest = new HttpPut();
 
 		// TODO get content type from request
 		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
 		httpRequest.setEntity(entity);
 
-		String response = executeRequest(httpRequest, expectedStatus);
+		String response = executeRequest(request, httpRequest);
 
 		return response;
 	}
 
-	protected String executeRequest(HttpUriRequest httpRequest, int expectedStatus) {
+	protected String executeRequest(BaseRequest request, HttpRequestBase httpRequest) {
+		URI uri = buildQueryString(request);
+		int expectedStatus = request.getExpectedStatus();
+
+		httpRequest.setURI(uri);
+		fillHeaders(request, httpRequest);
+
 		try (CloseableHttpClient client = HttpClientBuilder.create().build(); //
 				CloseableHttpResponse httpResponse = client.execute(httpRequest)) {
 			int responseStatus = httpResponse.getStatusLine().getStatusCode();
 			if (responseStatus != expectedStatus) {
-				throw new IllegalStateException("Expected HTTP response status " + expectedStatus + " " + "but instead got [" + responseStatus + "]");
+				throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] " + "but instead got [" + responseStatus + "]");
 			}
 
 			HttpEntity entity = httpResponse.getEntity();
@@ -121,6 +125,41 @@ public class HTTPClientApacheCommens implements HTTPClient {
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	protected URI buildQueryString(BaseRequest request) {
+		URI uri = request.getUri();
+		HashMap<String, String> queryParameters = request.getQueryParameters();
+
+		if (queryParameters != null && !queryParameters.isEmpty()) {
+			URIBuilder ub = new URIBuilder(uri);
+			for (Entry<String, String> queryParameter : queryParameters.entrySet()) {
+				String name = queryParameter.getKey();
+				String value = queryParameter.getValue();
+
+				ub.addParameter(name, value);
+			}
+
+			try {
+				uri = ub.build();
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return uri;
+	}
+
+	protected void fillHeaders(BaseRequest request, HttpRequestBase httpRequest) {
+		HashMap<String, String> headers = request.getHeaders();
+		if (headers != null && !headers.isEmpty()) {
+			for (Entry<String, String> header : headers.entrySet()) {
+				String name = header.getKey();
+				String value = header.getValue();
+
+				httpRequest.addHeader(name, value);
+			}
 		}
 	}
 
