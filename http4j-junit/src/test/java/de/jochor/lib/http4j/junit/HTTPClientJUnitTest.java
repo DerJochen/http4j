@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.jochor.lib.http4j.HTTPClientFactory;
+import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -44,6 +45,24 @@ public class HTTPClientJUnitTest {
 	@Test
 	public void testInstantiation() {
 		Assert.assertNotNull(httpClient);
+	}
+
+	@Test
+	public void testDelete_noResponse() {
+		DeleteRequest request = new DeleteRequest(URI.create("http://localhost/"));
+		request.setExpectedStatus(204);
+		String content = httpClient.delete(request);
+		Assert.assertNull(content);
+	}
+
+	@Test
+	public void testDelete_withResponse() {
+		String testContent = "{\"success\":true}";
+		HTTPClientJUnit.addResponse(testContent);
+
+		DeleteRequest request = new DeleteRequest(URI.create("http://localhost/"));
+		String content = httpClient.delete(request);
+		Assert.assertEquals(testContent, content);
 	}
 
 	@Test

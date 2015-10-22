@@ -1,6 +1,6 @@
 package de.jochor.lib.http4j;
 
-import de.jochor.lib.http4j.HTTPClient;
+import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -17,6 +17,11 @@ public class StaticHTTPClientBinder {
 
 	public static HTTPClient create() {
 		return new HTTPClient() {
+
+			@Override
+			public String delete(DeleteRequest deleteRequest) {
+				return null;
+			}
 
 			@Override
 			public String get(GetRequest request) {

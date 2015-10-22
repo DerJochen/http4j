@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -24,6 +25,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.BaseRequest;
+import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -33,11 +35,23 @@ import de.jochor.lib.http4j.model.PutRequest;
  * <p>
  * <b>Started:</b> 2015-08-19
  * </p>
- * 
+ *
  * @author Jochen Hormes
  *
  */
 public class HTTPClientApacheCommens implements HTTPClient {
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String delete(DeleteRequest request) {
+		HttpDelete httpRequest = new HttpDelete();
+
+		String response = executeRequest(request, httpRequest);
+
+		return response;
+	}
 
 	/**
 	 * {@inheritDoc}

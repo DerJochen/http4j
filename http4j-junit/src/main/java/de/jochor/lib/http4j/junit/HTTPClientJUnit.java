@@ -12,6 +12,7 @@ import org.junit.Assert;
 
 import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.BaseRequest;
+import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
@@ -80,6 +81,20 @@ public class HTTPClientJUnit implements HTTPClient {
 	public static void clearResponses() {
 		responses.clear();
 		expectedParamArrays.clear();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String delete(DeleteRequest request) {
+		int expectedStatus = request.getExpectedStatus();
+		if (expectedStatus == 204) {
+			return null;
+		} else {
+			String response = executeRequest(request, null);
+			return response;
+		}
 	}
 
 	/**
