@@ -118,6 +118,10 @@ public class HTTPClientApacheCommens implements HTTPClient {
 				throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] " + "but instead got [" + responseStatus + "]");
 			}
 
+			if (!hasContent(responseStatus)) {
+				return null;
+			}
+
 			HttpEntity entity = httpResponse.getEntity();
 			try (InputStream content = entity.getContent()) {
 				byte[] responseBody = new byte[(int) entity.getContentLength()];
@@ -175,6 +179,13 @@ public class HTTPClientApacheCommens implements HTTPClient {
 				httpRequest.addHeader(name, value);
 			}
 		}
+	}
+
+	protected boolean hasContent(int responseStatus) {
+		if (responseStatus == 204) {
+			return false;
+		}
+		return true;
 	}
 
 }
