@@ -15,7 +15,7 @@ import de.jochor.lib.http4j.model.PutRequest;
 import de.jochor.lib.servicefactory.ServiceFactory;
 
 /**
- * Test for HTTP client adapter implementations.
+ * Test for the jUnit implementation of the HTTP client.
  *
  * <p>
  * <b>Started:</b> 2015-10-15

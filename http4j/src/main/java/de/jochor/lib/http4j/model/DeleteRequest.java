@@ -13,6 +13,12 @@ import java.net.URI;
  */
 public class DeleteRequest extends BaseRequest {
 
+	/**
+	 * Creates a new HTTP DELETE request.
+	 *
+	 * @param uri
+	 *            Address to request
+	 */
 	public DeleteRequest(URI uri) {
 		super(uri);
 	}

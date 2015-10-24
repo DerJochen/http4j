@@ -31,6 +31,7 @@ import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 
 /**
+ * {@link HTTPClient} adapter for the Apache HTTP Components project.
  *
  * <p>
  * <b>Started:</b> 2015-08-19
@@ -39,7 +40,7 @@ import de.jochor.lib.http4j.model.PutRequest;
  * @author Jochen Hormes
  *
  */
-public class HTTPClientApacheCommens implements HTTPClient {
+public class HTTPClientApache implements HTTPClient {
 
 	/**
 	 * {@inheritDoc}

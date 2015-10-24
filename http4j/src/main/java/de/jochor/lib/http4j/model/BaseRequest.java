@@ -32,6 +32,14 @@ public abstract class BaseRequest {
 
 	private int expectedStatus = 200;
 
+	/**
+	 * Sets a header value. If the header already exists the old value is overwritten.
+	 *
+	 * @param name
+	 *            Name of the header
+	 * @param value
+	 *            Value to set
+	 */
 	public void setHeader(String name, String value) {
 		if (headers == null) {
 			headers = new HashMap<>();
@@ -40,6 +48,14 @@ public abstract class BaseRequest {
 		headers.put(name, value);
 	}
 
+	/**
+	 * Sets a query parameter. If the query parameter already exists the old value is overwritten.
+	 *
+	 * @param name
+	 *            Name of the query parameter
+	 * @param value
+	 *            value to set
+	 */
 	public void setQueryParameter(String name, String value) {
 		if (queryParameters == null) {
 			queryParameters = new HashMap<>();

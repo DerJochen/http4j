@@ -13,6 +13,12 @@ import java.net.URI;
  */
 public class GetRequest extends BaseRequest {
 
+	/**
+	 * Creates a new HTTP GET request.
+	 *
+	 * @param uri
+	 *            Address to request
+	 */
 	public GetRequest(URI uri) {
 		super(uri);
 	}
