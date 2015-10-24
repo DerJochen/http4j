@@ -6,7 +6,7 @@ import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 
 /**
- * TODO descr.
+ * Interface of the http4j HTTP client. http4j is used by implementing against this interface.
  *
  * <p>
  * <b>Started:</b> 2015-08-19
@@ -18,38 +18,38 @@ import de.jochor.lib.http4j.model.PutRequest;
 public interface HTTPClient {
 
 	/**
-	 * TODO JavaDoc
+	 * Sends a HTTP DELETE request.
 	 *
 	 * @param request
-	 *            TODO descr.
-	 * @return TODO descr.
+	 *            Request to send
+	 * @return Returned content, if any
 	 */
 	String delete(DeleteRequest request);
 
 	/**
-	 * TODO JavaDoc
+	 * Sends a HTTP GET request.
 	 *
 	 * @param request
-	 *            TODO descr.
-	 * @return TODO descr.
+	 *            Request to send
+	 * @return Returned content, if any
 	 */
 	String get(GetRequest request);
 
 	/**
-	 * TODO JavaDoc
+	 * Sends a HTTP POST request.
 	 *
 	 * @param request
-	 *            TODO descr.
-	 * @return TODO descr.
+	 *            Request to send
+	 * @return Returned content, if any
 	 */
 	String post(PostRequest request);
 
 	/**
-	 * TODO JavaDoc
+	 * Sends a HTTP PUT request.
 	 *
 	 * @param request
-	 *            TODO descr.
-	 * @return TODO descr.
+	 *            Request to send
+	 * @return Returned content, if any
 	 */
 	String put(PutRequest request);
 
