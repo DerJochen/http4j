@@ -11,7 +11,7 @@ Abstraction layer project for HTTP client calls and two adapters for external pr
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -21,7 +21,7 @@ Abstraction layer project for HTTP client calls and two adapters for external pr
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j-apache</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -31,7 +31,7 @@ Abstraction layer project for HTTP client calls and two adapters for external pr
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j-junit</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
