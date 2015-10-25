@@ -1,7 +1,8 @@
 package de.jochor.lib.http4j.apache;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -124,21 +125,34 @@ public class HTTPClientApache implements HTTPClient {
 			}
 
 			HttpEntity entity = httpResponse.getEntity();
-			try (InputStream content = entity.getContent()) {
-				byte[] responseBody = new byte[(int) entity.getContentLength()];
 
-				content.read(responseBody);
+			Charset charset;
+			Header encodingHeader = entity.getContentEncoding();
+			if (encodingHeader != null) {
+				String charsetName = encodingHeader.getValue();
+				charset = Charset.forName(charsetName);
+			} else {
+				charset = StandardCharsets.UTF_8;
+			}
 
-				Charset charset;
-				Header encodingHeader = entity.getContentEncoding();
-				if (encodingHeader != null) {
-					String charsetName = encodingHeader.getValue();
-					charset = Charset.forName(charsetName);
-				} else {
-					charset = StandardCharsets.UTF_8;
+			try (BufferedReader content = new BufferedReader(new InputStreamReader(entity.getContent(), charset))) {
+				String line = content.readLine();
+				if (line == null) {
+					return "";
 				}
 
-				String response = new String(responseBody, charset);
+				String nextLine = content.readLine();
+				if (nextLine == null) {
+					return line;
+				}
+
+				StringBuilder sb = new StringBuilder(line);
+				do {
+					sb.append('\n').append(nextLine);
+					nextLine = content.readLine();
+				} while (nextLine != null);
+
+				String response = sb.toString();
 
 				return response;
 			}
