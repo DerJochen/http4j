@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -143,12 +144,13 @@ public class HTTPClientJUnit implements HTTPClient {
 		}
 
 		HashMap<String, String> headers = request.getHeaders();
+		HashMap<String, String> queryParameters = request.getQueryParameters();
 		int expectedStatus = request.getExpectedStatus();
 		boolean expect200 = expectedStatus == 200;
 
 		int responseStatus = 200;
 
-		if (!checkHeaders(headers, expect200) || !checkParameters(uri, body, expect200)) {
+		if (!checkHeaders(headers, expect200) || !checkParameters(uri, queryParameters, expect200)) {
 			responseStatus = 404;
 		}
 		if (responseStatus != expectedStatus) {
@@ -182,7 +184,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return true;
 	}
 
-	private boolean checkParameters(URI uri, String body, boolean expect200) {
+	private boolean checkParameters(URI uri, HashMap<String, String> queryParameters, boolean expect200) {
 		String[] expectedParams = expectedParamArrays.peek();
 		if (expectedParams.length == 0) {
 			return true;
@@ -193,15 +195,21 @@ public class HTTPClientJUnit implements HTTPClient {
 		String query = uri.getQuery();
 		if (query != null) {
 			String[] queryParts = query.split("&");
-			parameters.addAll(Arrays.asList(queryParts));
+			for (String queryPart : queryParts) {
+				int firstEquals = queryPart.indexOf("=");
+				String paramName = queryPart.substring(0, firstEquals);
+				if (queryParameters == null || !queryParameters.containsKey(paramName)) {
+					parameters.add(queryPart);
+				}
+			}
 		}
 
-		if (body != null) {
-			String json = body.trim();
-			String jsonBody = json.substring(1, json.length() - 1);
-			jsonBody = jsonBody.replaceAll("\"", "").replaceAll(":", "=");
-			String[] jsonParts = jsonBody.split("\\s*,\\s*");
-			parameters.addAll(Arrays.asList(jsonParts));
+		if (queryParameters != null) {
+			Iterator<Entry<String, String>> iter = queryParameters.entrySet().iterator();
+			while (iter.hasNext()) {
+				Entry<String, String> entry = iter.next();
+				parameters.add(entry.getKey() + "=" + entry.getValue());
+			}
 		}
 
 		boolean expectedParamsFound = true;

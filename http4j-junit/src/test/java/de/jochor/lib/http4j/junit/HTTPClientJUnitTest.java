@@ -76,16 +76,57 @@ public class HTTPClientJUnitTest {
 	}
 
 	@Test
-	public void testGetWithParams() {
+	public void testExpectedParameters_explicit() {
 		String testContent = "test";
-		HTTPClientJUnit.addResponse(testContent, "test=1");
+		HTTPClientJUnit.addResponse(testContent, "test1=dummy1", "test2=dummy2");
 
 		GetRequest request = new GetRequest(URI.create("http://localhost/"));
 		request.setExpectedStatus(404);
 		String content = httpClient.get(request);
 		Assert.assertEquals("", content);
 
-		request = new GetRequest(URI.create("http://localhost/?test=1"));
+		request = new GetRequest(URI.create("http://localhost/"));
+		request.setQueryParameter("test1", "dummy1");
+		request.setQueryParameter("test2", "dummy2");
+		content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedParameters_inURI() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent, "test1=dummy1", "test2=dummy2");
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		request.setExpectedStatus(404);
+		String content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		request = new GetRequest(URI.create("http://localhost/?test1=dummy1&test2=dummy2"));
+		content = httpClient.get(request);
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedParameters_both() {
+		String testContent = "test";
+		HTTPClientJUnit.addResponse(testContent, "test1=dummy1", "test2=dummy2");
+
+		GetRequest request = new GetRequest(URI.create("http://localhost/"));
+		request.setExpectedStatus(404);
+		String content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		// In the URI both params are set to 'dummy1'.
+		request = new GetRequest(URI.create("http://localhost/?test1=dummy1&test2=dummy1"));
+		request.setExpectedStatus(404);
+		content = httpClient.get(request);
+		Assert.assertEquals("", content);
+
+		// In the URI both params are set to 'dummy1'. This checks that the explicit params win.
+		request = new GetRequest(URI.create("http://localhost/?test1=dummy1&test2=dummy1"));
+		request.setQueryParameter("test1", "dummy1");
+		request.setQueryParameter("test2", "dummy2");
 		content = httpClient.get(request);
 		Assert.assertEquals(testContent, content);
 	}

@@ -64,4 +64,17 @@ public abstract class BaseRequest {
 		queryParameters.put(name, value);
 	}
 
+	/**
+	 * Sets a query parameter. If the query parameter already exists the old value is overwritten.
+	 *
+	 * @param name
+	 *            Name of the query parameter
+	 * @param value
+	 *            value to set
+	 */
+	public void setQueryParameter(String name, int value) {
+		String valueString = Integer.valueOf(value).toString();
+		setQueryParameter(name, valueString);
+	}
+	
 }

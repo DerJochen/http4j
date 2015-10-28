@@ -162,7 +162,7 @@ public abstract class BasicHttp4jTest {
 	}
 
 	@Test
-	public void testExpectedParameters() {
+	public void testExpectedParameters_explicit() {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
@@ -170,6 +170,39 @@ public abstract class BasicHttp4jTest {
 		.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setQueryParameter("test1", "dummy1");
+		request.setQueryParameter("test2", "dummy2");
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedParameters_inURI() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+		.respond(HttpResponse.response(testContent));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/?test1=dummy1&test2=dummy2"));
+
+		String content = httpClient.get(request);
+
+		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testExpectedParameters_both() {
+		String testContent = "test content";
+
+		new MockServerClient("localhost", freePort) //
+		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+		.respond(HttpResponse.response(testContent));
+
+		// In the URI both params are set to 'dummy1'. This checks that the explicit params win.
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/?test1=dummy1&test2=dummy1"));
 		request.setQueryParameter("test1", "dummy1");
 		request.setQueryParameter("test2", "dummy2");
 
