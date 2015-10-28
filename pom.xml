@@ -7,7 +7,7 @@
 	<version>0.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<!-- Type 0 -->
-	<name>http4j</name>
+	<name>http4j-parent</name>
 	<description>Parent pom of the http4j project. Type 0 project.</description>
 
 	<parent>
