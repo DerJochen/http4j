@@ -8,7 +8,7 @@ import de.jochor.lib.http4j.apache.HTTPClientApache;
  * <p>
  * <b>Started:</b> 2015-09-03
  * </p>
- * 
+ *
  * @author Jochen Hormes
  *
  */
@@ -17,6 +17,10 @@ public class StaticHTTPClientBinder {
 	public static HTTPClient create() {
 		HTTPClientApache httpClient = new HTTPClientApache();
 		return httpClient;
+	}
+
+	public static String getImplName() {
+		return HTTPClientApache.class.getName();
 	}
 
 }

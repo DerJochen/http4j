@@ -19,4 +19,8 @@ public class StaticHTTPClientBinder {
 		return httpClient;
 	}
 
+	public static String getImplName() {
+		return HTTPClientJUnit.class.getName();
+	}
+
 }
