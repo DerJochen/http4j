@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>http4j-junit</artifactId>
-	<!-- Type T -->
+	<artifactId>http4j-multi-resource-test</artifactId>
+	<!-- Type 0 -->
 
 	<parent>
 		<groupId>de.jochor.lib.http</groupId>
@@ -12,39 +12,33 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<properties>
-		<version.http4j>${project.version}</version.http4j>
-		<version.junit>4.12</version.junit>
-	</properties>
-
 	<dependencies>
+
+		<!-- No compile time Dependencies -->
+
+		<!-- Test Dependencies -->
+
 		<dependency>
 			<groupId>de.jochor.lib.http</groupId>
-			<artifactId>http4j</artifactId>
-			<version>${version.http4j}</version>
+			<artifactId>http4j-apache</artifactId>
+			<version>${project.version}</version>
 			<!-- Type 0 -->
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.jochor.lib.http</groupId>
+			<artifactId>http4j-junit</artifactId>
+			<version>${project.version}</version>
+			<!-- Type 0 -->
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<!-- Type T -->
+			<!-- Type 0 -->
 		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<!-- No compile time Dependencies -->
-
-			<!-- Test dependencies -->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${version.junit}</version>
-				<!-- Type 0 -->
-				<scope>compile</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 </project>
