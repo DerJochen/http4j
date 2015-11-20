@@ -16,6 +16,10 @@ public class HTTPClientFactory extends ServiceFactory {
 
 	private static final String BINDER_NAME = "de/jochor/lib/http4j/StaticHTTPClientBinder.class";
 
+	private HTTPClientFactory() {
+		// Intended blank
+	}
+
 	/**
 	 * Factory method to produce a new instance of a HTTP Client adapter.
 	 *

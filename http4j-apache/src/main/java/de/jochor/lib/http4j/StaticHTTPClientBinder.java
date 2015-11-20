@@ -14,6 +14,10 @@ import de.jochor.lib.http4j.apache.HTTPClientApache;
  */
 public class StaticHTTPClientBinder {
 
+	private StaticHTTPClientBinder() {
+		// Intended blank
+	}
+
 	public static HTTPClient create() {
 		HTTPClientApache httpClient = new HTTPClientApache();
 		return httpClient;

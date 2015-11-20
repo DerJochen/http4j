@@ -14,6 +14,10 @@ import de.jochor.lib.http4j.junit.HTTPClientJUnit;
  */
 public class StaticHTTPClientBinder {
 
+	private StaticHTTPClientBinder() {
+		// Intended blank
+	}
+
 	public static HTTPClient create() {
 		HTTPClientJUnit httpClient = new HTTPClientJUnit();
 		return httpClient;

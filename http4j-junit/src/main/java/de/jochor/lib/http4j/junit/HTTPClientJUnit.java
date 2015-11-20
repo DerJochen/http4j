@@ -167,7 +167,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return response;
 	}
 
-	private boolean checkHeaders(HashMap<String, String> headers, boolean expect200) {
+	private static boolean checkHeaders(HashMap<String, String> headers, boolean expect200) {
 		for (Entry<String, String> expected : expectedHeaders.entrySet()) {
 			String name = expected.getKey();
 			String value = expected.getValue();
@@ -184,7 +184,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return true;
 	}
 
-	private boolean checkParameters(URI uri, HashMap<String, String> queryParameters, boolean expect200) {
+	private static boolean checkParameters(URI uri, HashMap<String, String> queryParameters, boolean expect200) {
 		String[] expectedParams = expectedParamArrays.peek();
 		if (expectedParams.length == 0) {
 			return true;

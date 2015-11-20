@@ -3,6 +3,7 @@ package de.jochor.lib.http4j.model;
 import java.net.URI;
 
 /**
+ * Represents a HTTP DELETE request.
  *
  * <p>
  * <b>Started:</b> 2015-10-22

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
+ * Base class for HTTP request.
  *
  * <p>
  * <b>Started:</b> 2015-09-22
@@ -73,7 +74,7 @@ public abstract class BaseRequest {
 	 *            value to set
 	 */
 	public void setQueryParameter(String name, int value) {
-		String valueString = Integer.valueOf(value).toString();
+		String valueString = Integer.toString(value);
 		setQueryParameter(name, valueString);
 	}
 	

@@ -3,6 +3,7 @@ package de.jochor.lib.http4j.model;
 import java.net.URI;
 
 /**
+ * Represents a HTTP GET request.
  *
  * <p>
  * <b>Started:</b> 2015-08-19

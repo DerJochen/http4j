@@ -5,6 +5,7 @@ import java.net.URI;
 import lombok.Getter;
 
 /**
+ * Represents a HTTP PUT request.
  *
  * <p>
  * <b>Started:</b> 2015-08-19
@@ -15,6 +16,8 @@ import lombok.Getter;
  */
 @Getter
 public class PutRequest extends BaseRequest {
+
+	private String body;
 
 	/**
 	 * Creates a new HTTP PUT request.
@@ -28,7 +31,5 @@ public class PutRequest extends BaseRequest {
 		super(uri);
 		this.body = body;
 	}
-
-	private String body;
 
 }
