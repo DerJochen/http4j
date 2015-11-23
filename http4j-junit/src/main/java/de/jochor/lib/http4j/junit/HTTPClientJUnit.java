@@ -191,26 +191,8 @@ public class HTTPClientJUnit implements HTTPClient {
 		}
 
 		HashSet<String> parameters = new HashSet<>();
-
-		String query = uri.getQuery();
-		if (query != null) {
-			String[] queryParts = query.split("&");
-			for (String queryPart : queryParts) {
-				int firstEquals = queryPart.indexOf("=");
-				String paramName = queryPart.substring(0, firstEquals);
-				if (queryParameters == null || !queryParameters.containsKey(paramName)) {
-					parameters.add(queryPart);
-				}
-			}
-		}
-
-		if (queryParameters != null) {
-			Iterator<Entry<String, String>> iter = queryParameters.entrySet().iterator();
-			while (iter.hasNext()) {
-				Entry<String, String> entry = iter.next();
-				parameters.add(entry.getKey() + "=" + entry.getValue());
-			}
-		}
+		readImpliciteParameters(uri, parameters, queryParameters);
+		readExpliciteParameters(queryParameters, parameters);
 
 		boolean expectedParamsFound = true;
 		if (expect200) {
@@ -222,5 +204,33 @@ public class HTTPClientJUnit implements HTTPClient {
 		}
 
 		return expectedParamsFound;
+	}
+
+	private static void readExpliciteParameters(HashMap<String, String> queryParameters, HashSet<String> parameters) {
+		if (queryParameters == null) {
+			return;
+		}
+
+		Iterator<Entry<String, String>> iter = queryParameters.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, String> entry = iter.next();
+			parameters.add(entry.getKey() + "=" + entry.getValue());
+		}
+	}
+
+	private static void readImpliciteParameters(URI uri, HashSet<String> parameters, HashMap<String, String> queryParameters) {
+		String query = uri.getQuery();
+		if (query == null) {
+			return;
+		}
+
+		String[] queryParts = query.split("&");
+		for (String queryPart : queryParts) {
+			int firstEquals = queryPart.indexOf("=");
+			String paramName = queryPart.substring(0, firstEquals);
+			if (queryParameters == null || !queryParameters.containsKey(paramName)) {
+				parameters.add(queryPart);
+			}
+		}
 	}
 }

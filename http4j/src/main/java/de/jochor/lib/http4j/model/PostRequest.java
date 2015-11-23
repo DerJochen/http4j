@@ -15,9 +15,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class PostRequest extends BaseRequest {
-
-	private String body;
+public class PostRequest extends BaseContentRequest {
 
 	/**
 	 * Creates a new HTTP POST request.
@@ -28,8 +26,7 @@ public class PostRequest extends BaseRequest {
 	 *            Body of the request
 	 */
 	public PostRequest(URI uri, String body) {
-		super(uri);
-		this.body = body;
+		super(uri, body);
 	}
 
 }

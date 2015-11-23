@@ -25,6 +25,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import de.jochor.lib.http4j.HTTPClient;
+import de.jochor.lib.http4j.HTTPRequestException;
+import de.jochor.lib.http4j.UnknownContentTypeException;
+import de.jochor.lib.http4j.model.BaseContentRequest;
 import de.jochor.lib.http4j.model.BaseRequest;
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
@@ -76,8 +79,8 @@ public class HTTPClientApache implements HTTPClient {
 
 		HttpPost httpRequest = new HttpPost();
 
-		// TODO get content type from request
-		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
+		ContentType contentType = selectContentType(request);
+		HttpEntity entity = new StringEntity(body, contentType);
 		httpRequest.setEntity(entity);
 
 		String response = executeRequest(request, httpRequest);
@@ -97,8 +100,8 @@ public class HTTPClientApache implements HTTPClient {
 
 		HttpPut httpRequest = new HttpPut();
 
-		// TODO get content type from request
-		HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
+		ContentType contentType = selectContentType(request);
+		HttpEntity entity = new StringEntity(body, contentType);
 		httpRequest.setEntity(entity);
 
 		String response = executeRequest(request, httpRequest);
@@ -107,61 +110,36 @@ public class HTTPClientApache implements HTTPClient {
 	}
 
 	protected String executeRequest(BaseRequest request, HttpRequestBase httpRequest) {
-		URI uri = buildQueryString(request);
-		int expectedStatus = request.getExpectedStatus();
+		try {
+			URI uri = buildQueryString(request);
+			int expectedStatus = request.getExpectedStatus();
 
-		httpRequest.setURI(uri);
-		fillHeaders(request, httpRequest);
+			httpRequest.setURI(uri);
+			fillHeaders(request, httpRequest);
 
-		try (CloseableHttpClient client = HttpClientBuilder.create().build(); //
-				CloseableHttpResponse httpResponse = client.execute(httpRequest)) {
-			int responseStatus = httpResponse.getStatusLine().getStatusCode();
-			if (responseStatus != expectedStatus) {
-				throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] " + "but instead got [" + responseStatus + "]");
-			}
-
-			if (!hasContent(responseStatus)) {
-				return null;
-			}
-
-			HttpEntity entity = httpResponse.getEntity();
-
-			Charset charset;
-			Header encodingHeader = entity.getContentEncoding();
-			if (encodingHeader != null) {
-				String charsetName = encodingHeader.getValue();
-				charset = Charset.forName(charsetName);
-			} else {
-				charset = StandardCharsets.UTF_8;
-			}
-
-			try (BufferedReader content = new BufferedReader(new InputStreamReader(entity.getContent(), charset))) {
-				String line = content.readLine();
-				if (line == null) {
-					return "";
+			try (CloseableHttpClient client = HttpClientBuilder.create().build(); //
+					CloseableHttpResponse httpResponse = client.execute(httpRequest)) {
+				int responseStatus = httpResponse.getStatusLine().getStatusCode();
+				if (responseStatus != expectedStatus) {
+					throw new IllegalStateException("Expected HTTP response status [" + expectedStatus + "] " + "but instead got [" + responseStatus + "]");
 				}
 
-				String nextLine = content.readLine();
-				if (nextLine == null) {
-					return line;
+				if (!hasContent(responseStatus)) {
+					return null;
 				}
 
-				StringBuilder sb = new StringBuilder(line);
-				do {
-					sb.append('\n').append(nextLine);
-					nextLine = content.readLine();
-				} while (nextLine != null);
+				HttpEntity entity = httpResponse.getEntity();
 
-				String response = sb.toString();
+				String response = readResponse(entity);
 
 				return response;
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		} catch (IOException | URISyntaxException e) {
+			throw new HTTPRequestException(e);
 		}
 	}
 
-	protected URI buildQueryString(BaseRequest request) {
+	private static URI buildQueryString(BaseRequest request) throws URISyntaxException {
 		URI uri = request.getUri();
 		HashMap<String, String> queryParameters = request.getQueryParameters();
 
@@ -174,17 +152,13 @@ public class HTTPClientApache implements HTTPClient {
 				ub.addParameter(name, value);
 			}
 
-			try {
-				uri = ub.build();
-			} catch (URISyntaxException e) {
-				throw new RuntimeException(e);
-			}
+			uri = ub.build();
 		}
 
 		return uri;
 	}
 
-	protected void fillHeaders(BaseRequest request, HttpRequestBase httpRequest) {
+	private static void fillHeaders(BaseRequest request, HttpRequestBase httpRequest) {
 		HashMap<String, String> headers = request.getHeaders();
 		if (headers != null && !headers.isEmpty()) {
 			for (Entry<String, String> header : headers.entrySet()) {
@@ -196,11 +170,59 @@ public class HTTPClientApache implements HTTPClient {
 		}
 	}
 
-	protected boolean hasContent(int responseStatus) {
+	private static boolean hasContent(int responseStatus) {
 		if (responseStatus == 204) {
 			return false;
 		}
 		return true;
+	}
+
+	private static ContentType selectContentType(BaseContentRequest request) {
+		de.jochor.lib.http4j.model.ContentType http4jContentType = request.getContentType();
+		if (http4jContentType == de.jochor.lib.http4j.model.ContentType.APPLICATION_JSON) {
+			return ContentType.APPLICATION_JSON;
+		} else {
+			throw new UnknownContentTypeException(http4jContentType);
+		}
+	}
+
+	private static String readResponse(HttpEntity entity) throws IOException {
+		Charset charset = selectCharset(entity);
+
+		try (BufferedReader content = new BufferedReader(new InputStreamReader(entity.getContent(), charset))) {
+			String line = content.readLine();
+			if (line == null) {
+				return "";
+			}
+
+			String nextLine = content.readLine();
+			if (nextLine == null) {
+				return line;
+			}
+
+			StringBuilder sb = new StringBuilder(line);
+			do {
+				sb.append('\n').append(nextLine);
+				nextLine = content.readLine();
+			} while (nextLine != null);
+
+			String response = sb.toString();
+
+			return response;
+		}
+	}
+
+	private static Charset selectCharset(HttpEntity entity) {
+		Charset charset;
+		Header encodingHeader = entity.getContentEncoding();
+		if (encodingHeader != null) {
+			String charsetName = encodingHeader.getValue();
+			charset = Charset.forName(charsetName);
+		} else {
+			charset = StandardCharsets.UTF_8;
+		}
+
+		return charset;
 	}
 
 }

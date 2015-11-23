@@ -18,11 +18,21 @@ public class StaticHTTPClientBinder {
 		// Intended blank
 	}
 
+	/**
+	 * Factory method to produce a new instance of a {@link HTTPClientJUnit}.
+	 *
+	 * @return Service instance
+	 */
 	public static HTTPClient create() {
 		HTTPClientJUnit httpClient = new HTTPClientJUnit();
 		return httpClient;
 	}
 
+	/**
+	 * Returns the full qualified name of the service class this binder creates.
+	 *
+	 * @return Name of the service
+	 */
 	public static String getImplName() {
 		return HTTPClientJUnit.class.getName();
 	}

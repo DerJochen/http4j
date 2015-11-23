@@ -15,21 +15,18 @@ import lombok.Getter;
  *
  */
 @Getter
-public class PutRequest extends BaseRequest {
-
-	private String body;
+public class PutRequest extends BaseContentRequest {
 
 	/**
 	 * Creates a new HTTP PUT request.
-	 * 
+	 *
 	 * @param uri
 	 *            Address to request
 	 * @param body
 	 *            Body of the request
 	 */
 	public PutRequest(URI uri, String body) {
-		super(uri);
-		this.body = body;
+		super(uri, body);
 	}
 
 }

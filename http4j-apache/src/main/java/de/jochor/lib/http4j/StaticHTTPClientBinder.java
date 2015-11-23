@@ -18,11 +18,21 @@ public class StaticHTTPClientBinder {
 		// Intended blank
 	}
 
+	/**
+	 * Factory method to produce a new instance of a {@link HTTPClientApache}.
+	 *
+	 * @return Service instance
+	 */
 	public static HTTPClient create() {
 		HTTPClientApache httpClient = new HTTPClientApache();
 		return httpClient;
 	}
 
+	/**
+	 * Returns the full qualified name of the service class this binder creates.
+	 * 
+	 * @return Name of the service
+	 */
 	public static String getImplName() {
 		return HTTPClientApache.class.getName();
 	}
