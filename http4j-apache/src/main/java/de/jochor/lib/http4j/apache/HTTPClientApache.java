@@ -143,7 +143,7 @@ public class HTTPClientApache implements HTTPClient {
 		URI uri = request.getUri();
 		HashMap<String, String> queryParameters = request.getQueryParameters();
 
-		if (queryParameters != null && !queryParameters.isEmpty()) {
+		if (queryParameters != null) {
 			URIBuilder ub = new URIBuilder(uri);
 			for (Entry<String, String> queryParameter : queryParameters.entrySet()) {
 				String name = queryParameter.getKey();

@@ -18,12 +18,12 @@ public class UnknownContentTypeException extends RuntimeException {
 
 	/**
 	 * Creates a new {@link UnknownContentTypeException}.
-	 * 
+	 *
 	 * @param contentType
 	 *            Unknown {@link ContentType}
 	 */
 	public UnknownContentTypeException(ContentType contentType) {
-		super("Unknown content type: " + contentType.name());
+		super("Unknown content type: " + (contentType != null ? contentType.name() : "null"));
 	}
 
 }

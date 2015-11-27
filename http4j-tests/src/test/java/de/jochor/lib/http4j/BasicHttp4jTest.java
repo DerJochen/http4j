@@ -1,6 +1,7 @@
 package de.jochor.lib.http4j;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.URI;
 
@@ -100,13 +101,14 @@ public abstract class BasicHttp4jTest {
 
 	@Test
 	public void testSimpleGet2() {
-		String testContent = "test content\\nsecond line";
+		String testContent = "test content\nsecond line\nthird one";
 
 		new MockServerClient("localhost", freePort) //
 		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(testContent));
+		.respond(HttpResponse.response(testContent).withHeader("Content-Encoding", "utf-8"));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setQueryParameter("five", 5);
 
 		String content = httpClient.get(request);
 
@@ -146,7 +148,23 @@ public abstract class BasicHttp4jTest {
 	}
 
 	@Test
-	public void testWrongMethod() {
+	public void testSimplePut_noBody() {
+		String testContent = "test content";
+		String testBody = null;
+
+		new MockServerClient("localhost", freePort) //
+		.when(HttpRequest.request("/").withMethod("PUT")) //
+		.respond(HttpResponse.response(testContent + " - null"));
+
+		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
+
+		String content = httpClient.put(request);
+
+		Assert.assertEquals(testContent + " - null", content);
+	}
+
+	@Test
+	public void testGet_wrongMethod() {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
@@ -159,6 +177,30 @@ public abstract class BasicHttp4jTest {
 		String content = httpClient.get(request);
 
 		Assert.assertEquals("", content);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testGet_wrongStatus() {
+		new MockServerClient("localhost", freePort) //
+		.when(HttpRequest.request("/").withMethod("GET")) //
+		.respond(HttpResponse.response(""));
+
+		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
+		request.setExpectedStatus(404); // wrong status expected
+
+		httpClient.get(request);
+	}
+
+	@Test(expected = UnknownContentTypeException.class)
+	public void test_missingEncoding() {
+		new MockServerClient("localhost", freePort) //
+		.when(HttpRequest.request("/").withMethod("GET")) //
+		.respond(HttpResponse.response(""));
+
+		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), "");
+		request.setContentType(null);
+
+		httpClient.put(request);
 	}
 
 	@Test
@@ -260,6 +302,14 @@ public abstract class BasicHttp4jTest {
 		String content = httpClient.get(request);
 
 		Assert.assertEquals("", content);
+	}
+
+	@Test
+	public void testGetImplName() throws Exception {
+		Method method = StaticHTTPClientBinder.class.getMethod("getImplName");
+		Object value = method.invoke(null);
+		Assert.assertNotNull(value);
+		Assert.assertTrue(value instanceof String);
 	}
 
 	private static int pickFreePort() {
