@@ -306,7 +306,8 @@ public abstract class BasicHttp4jTest {
 
 	@Test
 	public void testGetImplName() throws Exception {
-		Method method = StaticHTTPClientBinder.class.getMethod("getImplName");
+		Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass("de.jochor.lib.http4j.StaticHTTPClientBinder");
+		Method method = loadedClass.getMethod("getImplName");
 		Object value = method.invoke(null);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof String);
