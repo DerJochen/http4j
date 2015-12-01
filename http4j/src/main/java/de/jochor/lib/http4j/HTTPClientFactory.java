@@ -8,7 +8,7 @@ import de.jochor.lib.servicefactory.ServiceFactory;
  * <p>
  * <b>Started:</b> 2015-08-19
  * </p>
- * 
+ *
  * @author Jochen Hormes
  *
  */
