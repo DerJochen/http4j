@@ -40,7 +40,7 @@ Normally this is only necessary if you need different implementation during test
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
@@ -50,7 +50,7 @@ Normally this is only necessary if you need different implementation during test
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j-apache</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ Normally this is only necessary if you need different implementation during test
 <dependency>
     <groupId>de.jochor.lib.http</groupId>
     <artifactId>http4j-junit</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
