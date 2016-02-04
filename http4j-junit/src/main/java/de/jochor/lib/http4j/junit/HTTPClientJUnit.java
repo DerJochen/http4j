@@ -37,6 +37,8 @@ public class HTTPClientJUnit implements HTTPClient {
 
 	protected static final Queue<String[]> expectedParamArrays = new LinkedList<>();
 
+	protected static final Queue<RequestHolder> requestHolders = new LinkedList<>();
+
 	/**
 	 * Adds an expected header by name and value. Any request without those headers will receive a 401 response.
 	 * <p>
@@ -71,9 +73,13 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * @param expectedParams
 	 *            Parameters and values to be expected (optional)
 	 */
-	public static void addResponse(String response, String... expectedParams) {
+	public static RequestHolder addResponse(String response, String... expectedParams) {
 		responses.add(response);
 		expectedParamArrays.add(expectedParams);
+		RequestHolder requestHolder = new RequestHolder();
+		requestHolders.add(requestHolder);
+
+		return requestHolder;
 	}
 
 	/**
@@ -82,6 +88,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	public static void clearResponses() {
 		responses.clear();
 		expectedParamArrays.clear();
+		requestHolders.clear();
 	}
 
 	/**
@@ -136,7 +143,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		URI uri = request.getUri();
 
 		if (responses.isEmpty()) {
-			String msg = "No more answers configured. Request was: '" + uri.toString();
+			String msg = "No more answers configured. Request was: '" + uri.toString() + "'";
 			if (body != null) {
 				msg += " - " + body;
 			}
@@ -163,6 +170,8 @@ public class HTTPClientJUnit implements HTTPClient {
 
 		String response = responses.poll();
 		expectedParamArrays.poll();
+		RequestHolder requestHolder = requestHolders.poll();
+		requestHolder.setRequest(request);
 
 		return response;
 	}

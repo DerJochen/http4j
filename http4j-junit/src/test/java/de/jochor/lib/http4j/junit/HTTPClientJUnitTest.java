@@ -58,21 +58,23 @@ public class HTTPClientJUnitTest {
 	@Test
 	public void testDelete_withResponse() {
 		String testContent = "{\"success\":true}";
-		HTTPClientJUnit.addResponse(testContent);
+		RequestHolder requestHolder = HTTPClientJUnit.addResponse(testContent);
 
 		DeleteRequest request = new DeleteRequest(URI.create("http://localhost/"));
 		String content = httpClient.delete(request);
 		Assert.assertEquals(testContent, content);
+		Assert.assertEquals(request, requestHolder.getRequest());
 	}
 
 	@Test
 	public void testGet() {
 		String testContent = "test";
-		HTTPClientJUnit.addResponse(testContent);
+		RequestHolder requestHolder = HTTPClientJUnit.addResponse(testContent);
 
 		GetRequest request = new GetRequest(URI.create("http://localhost/"));
 		String content = httpClient.get(request);
 		Assert.assertEquals(testContent, content);
+		Assert.assertEquals(request, requestHolder.getRequest());
 	}
 
 	@Test
@@ -134,21 +136,23 @@ public class HTTPClientJUnitTest {
 	@Test
 	public void testPost() {
 		String testContent = "test";
-		HTTPClientJUnit.addResponse(testContent);
+		RequestHolder requestHolder = HTTPClientJUnit.addResponse(testContent);
 
 		PostRequest request = new PostRequest(URI.create("http://localhost/"), "{v=1}");
 		String content = httpClient.post(request);
 		Assert.assertEquals(testContent, content);
+		Assert.assertEquals(request, requestHolder.getRequest());
 	}
 
 	@Test
 	public void testPut() {
 		String testContent = "test";
-		HTTPClientJUnit.addResponse(testContent);
+		RequestHolder requestHolder = HTTPClientJUnit.addResponse(testContent);
 
 		PutRequest request = new PutRequest(URI.create("http://localhost/"), "{v=1}");
 		String content = httpClient.put(request);
 		Assert.assertEquals(testContent, content);
+		Assert.assertEquals(request, requestHolder.getRequest());
 	}
 
 	@Test
