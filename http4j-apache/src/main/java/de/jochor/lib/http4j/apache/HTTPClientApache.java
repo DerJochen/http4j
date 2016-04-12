@@ -15,6 +15,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -31,6 +32,7 @@ import de.jochor.lib.http4j.model.BaseContentRequest;
 import de.jochor.lib.http4j.model.BaseRequest;
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PatchRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 
@@ -64,6 +66,24 @@ public class HTTPClientApache implements HTTPClient {
 	@Override
 	public String get(GetRequest request) {
 		HttpGet httpRequest = new HttpGet();
+
+		String response = executeRequest(request, httpRequest);
+
+		return response;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String patch(PatchRequest request) {
+		String body = request.getBody();
+
+		HttpPatch httpRequest = new HttpPatch();
+
+		ContentType contentType = selectContentType(request);
+		HttpEntity entity = new StringEntity(body, contentType);
+		httpRequest.setEntity(entity);
 
 		String response = executeRequest(request, httpRequest);
 

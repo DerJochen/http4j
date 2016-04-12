@@ -10,6 +10,7 @@ import org.junit.Test;
 import de.jochor.lib.http4j.HTTPClientFactory;
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PatchRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 import de.jochor.lib.servicefactory.ServiceFactory;
@@ -131,6 +132,17 @@ public class HTTPClientJUnitTest {
 		request.setQueryParameter("test2", "dummy2");
 		content = httpClient.get(request);
 		Assert.assertEquals(testContent, content);
+	}
+
+	@Test
+	public void testPatch() {
+		String testContent = "test";
+		RequestHolder requestHolder = HTTPClientJUnit.addResponse(testContent);
+
+		PatchRequest request = new PatchRequest(URI.create("http://localhost/"), "{v=1}");
+		String content = httpClient.patch(request);
+		Assert.assertEquals(testContent, content);
+		Assert.assertEquals(request, requestHolder.getRequest());
 	}
 
 	@Test

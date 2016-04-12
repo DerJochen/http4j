@@ -15,6 +15,7 @@ import de.jochor.lib.http4j.HTTPClient;
 import de.jochor.lib.http4j.model.BaseRequest;
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PatchRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 
@@ -60,6 +61,8 @@ public class HTTPClientJUnit implements HTTPClient {
 	public static void clearExpectedHeaders() {
 		expectedHeaders.clear();
 	}
+
+	// TODO How to get the RequestHolder for requests without an answer?
 
 	/**
 	 * Adds a predefined response to the response queue. On every request the next response is popped from the queue and
@@ -111,6 +114,18 @@ public class HTTPClientJUnit implements HTTPClient {
 	@Override
 	public String get(GetRequest request) {
 		String response = executeRequest(request, null);
+
+		return response;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String patch(PatchRequest request) {
+		String body = request.getBody();
+
+		String response = executeRequest(request, body);
 
 		return response;
 	}

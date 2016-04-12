@@ -2,6 +2,7 @@ package de.jochor.lib.http4j;
 
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PatchRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 
@@ -25,6 +26,11 @@ public class StaticHTTPClientBinder {
 
 			@Override
 			public String get(GetRequest request) {
+				return null;
+			}
+
+			@Override
+			public String patch(PatchRequest request) {
 				return null;
 			}
 

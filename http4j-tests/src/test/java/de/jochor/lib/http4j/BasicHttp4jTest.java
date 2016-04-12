@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import de.jochor.lib.http4j.model.DeleteRequest;
 import de.jochor.lib.http4j.model.GetRequest;
+import de.jochor.lib.http4j.model.PatchRequest;
 import de.jochor.lib.http4j.model.PostRequest;
 import de.jochor.lib.http4j.model.PutRequest;
 import de.jochor.lib.servicefactory.ServiceFactory;
@@ -73,8 +74,8 @@ public abstract class BasicHttp4jTest {
 	@Test
 	public void testSimpleDelete() {
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("DELETE")) //
-		.respond(HttpResponse.response().withStatusCode(204));
+				.when(HttpRequest.request("/").withMethod("DELETE")) //
+				.respond(HttpResponse.response().withStatusCode(204));
 
 		DeleteRequest request = new DeleteRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setExpectedStatus(204);
@@ -89,8 +90,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 
@@ -104,8 +105,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content\nsecond line\nthird one";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(testContent).withHeader("Content-Encoding", "utf-8"));
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(testContent).withHeader("Content-Encoding", "utf-8"));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setQueryParameter("five", 5);
@@ -116,13 +117,29 @@ public abstract class BasicHttp4jTest {
 	}
 
 	@Test
+	public void testSimplePatch() {
+		String testContent = "test content";
+		String testBody = "test body";
+
+		new MockServerClient("localhost", freePort) //
+				.when(HttpRequest.request("/").withMethod("PATCH")) //
+				.respond(HttpResponse.response(testContent + " - " + testBody));
+
+		PatchRequest request = new PatchRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
+
+		String content = httpClient.patch(request);
+
+		Assert.assertEquals(testContent + " - " + testBody, content);
+	}
+
+	@Test
 	public void testSimplePost() {
 		String testContent = "test content";
 		String testBody = "test body";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("POST")) //
-		.respond(HttpResponse.response(testContent + " - " + testBody));
+				.when(HttpRequest.request("/").withMethod("POST")) //
+				.respond(HttpResponse.response(testContent + " - " + testBody));
 
 		PostRequest request = new PostRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
 
@@ -137,8 +154,8 @@ public abstract class BasicHttp4jTest {
 		String testBody = "test body";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("PUT")) //
-		.respond(HttpResponse.response(testContent + " - " + testBody));
+				.when(HttpRequest.request("/").withMethod("PUT")) //
+				.respond(HttpResponse.response(testContent + " - " + testBody));
 
 		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
 
@@ -153,8 +170,8 @@ public abstract class BasicHttp4jTest {
 		String testBody = null;
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("PUT")) //
-		.respond(HttpResponse.response(testContent + " - null"));
+				.when(HttpRequest.request("/").withMethod("PUT")) //
+				.respond(HttpResponse.response(testContent + " - null"));
 
 		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), testBody);
 
@@ -168,8 +185,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("PUT")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("PUT")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setExpectedStatus(404); // wrong method, so nothing should be found
@@ -182,8 +199,8 @@ public abstract class BasicHttp4jTest {
 	@Test(expected = IllegalStateException.class)
 	public void testGet_wrongStatus() {
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(""));
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(""));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setExpectedStatus(404); // wrong status expected
@@ -194,8 +211,8 @@ public abstract class BasicHttp4jTest {
 	@Test(expected = UnknownContentTypeException.class)
 	public void test_missingEncoding() {
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET")) //
-		.respond(HttpResponse.response(""));
+				.when(HttpRequest.request("/").withMethod("GET")) //
+				.respond(HttpResponse.response(""));
 
 		PutRequest request = new PutRequest(URI.create("http://localhost:" + freePort + "/"), "");
 		request.setContentType(null);
@@ -208,8 +225,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setQueryParameter("test1", "dummy1");
@@ -225,8 +242,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/?test1=dummy1&test2=dummy2"));
 
@@ -240,8 +257,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("test1", "dummy1").withQueryStringParameter("test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		// In the URI both params are set to 'dummy1'. This checks that the explicit params win.
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/?test1=dummy1&test2=dummy1"));
@@ -258,8 +275,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("x-test1", "dummy1").withQueryStringParameter("x-test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withQueryStringParameter("x-test1", "dummy1").withQueryStringParameter("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setQueryParameter("test1", "dummy1");
@@ -275,8 +292,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setHeader("x-test1", "dummy1");
@@ -292,8 +309,8 @@ public abstract class BasicHttp4jTest {
 		String testContent = "test content";
 
 		new MockServerClient("localhost", freePort) //
-		.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
-		.respond(HttpResponse.response(testContent));
+				.when(HttpRequest.request("/").withMethod("GET").withHeader("x-test1", "dummy1").withHeader("x-test2", "dummy2")) //
+				.respond(HttpResponse.response(testContent));
 
 		GetRequest request = new GetRequest(URI.create("http://localhost:" + freePort + "/"));
 		request.setHeader("x-test1", "dummy1");
