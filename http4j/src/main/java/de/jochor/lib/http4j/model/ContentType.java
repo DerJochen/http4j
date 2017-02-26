@@ -1,5 +1,8 @@
 package de.jochor.lib.http4j.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Content type for HTTP requests.
  *
@@ -10,8 +13,14 @@ package de.jochor.lib.http4j.model;
  * @author Jochen Hormes
  *
  */
+@RequiredArgsConstructor
+@Getter
 public enum ContentType {
 
-	APPLICATION_JSON;
+	APPLICATION_JSON("application/json"), //
+	TEXT_HTML("text/html"), //
+	TEXT_PLAIN("text/plain");
+
+	private final String mimeType;
 
 }

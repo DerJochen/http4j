@@ -209,7 +209,7 @@ public abstract class BasicHttp4jTest {
 	}
 
 	@Test(expected = UnknownContentTypeException.class)
-	public void test_missingEncoding() {
+	public void test_missingContentType() {
 		new MockServerClient("localhost", freePort) //
 				.when(HttpRequest.request("/").withMethod("GET")) //
 				.respond(HttpResponse.response(""));

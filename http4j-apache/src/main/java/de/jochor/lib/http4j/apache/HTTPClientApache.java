@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -52,7 +53,7 @@ public class HTTPClientApache implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String delete(DeleteRequest request) {
+	public String delete(final DeleteRequest request) {
 		HttpDelete httpRequest = new HttpDelete();
 
 		String response = executeRequest(request, httpRequest);
@@ -64,7 +65,7 @@ public class HTTPClientApache implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String get(GetRequest request) {
+	public String get(final GetRequest request) {
 		HttpGet httpRequest = new HttpGet();
 
 		String response = executeRequest(request, httpRequest);
@@ -76,7 +77,7 @@ public class HTTPClientApache implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String patch(PatchRequest request) {
+	public String patch(final PatchRequest request) {
 		String body = request.getBody();
 
 		HttpPatch httpRequest = new HttpPatch();
@@ -94,7 +95,7 @@ public class HTTPClientApache implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String post(PostRequest request) {
+	public String post(final PostRequest request) {
 		String body = request.getBody();
 
 		HttpPost httpRequest = new HttpPost();
@@ -112,7 +113,7 @@ public class HTTPClientApache implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String put(PutRequest request) {
+	public String put(final PutRequest request) {
 		String body = request.getBody();
 		if (body == null) {
 			body = "";
@@ -129,7 +130,7 @@ public class HTTPClientApache implements HTTPClient {
 		return response;
 	}
 
-	protected String executeRequest(BaseRequest request, HttpRequestBase httpRequest) {
+	protected String executeRequest(final BaseRequest request, final HttpRequestBase httpRequest) {
 		try {
 			URI uri = buildQueryString(request);
 			int expectedStatus = request.getExpectedStatus();
@@ -159,7 +160,7 @@ public class HTTPClientApache implements HTTPClient {
 		}
 	}
 
-	private static URI buildQueryString(BaseRequest request) throws URISyntaxException {
+	private static URI buildQueryString(final BaseRequest request) throws URISyntaxException {
 		URI uri = request.getUri();
 		HashMap<String, String> queryParameters = request.getQueryParameters();
 
@@ -178,7 +179,7 @@ public class HTTPClientApache implements HTTPClient {
 		return uri;
 	}
 
-	private static void fillHeaders(BaseRequest request, HttpRequestBase httpRequest) {
+	private static void fillHeaders(final BaseRequest request, final HttpRequestBase httpRequest) {
 		HashMap<String, String> headers = request.getHeaders();
 		if (headers != null && !headers.isEmpty()) {
 			for (Entry<String, String> header : headers.entrySet()) {
@@ -190,23 +191,29 @@ public class HTTPClientApache implements HTTPClient {
 		}
 	}
 
-	private static boolean hasContent(int responseStatus) {
+	private static boolean hasContent(final int responseStatus) {
 		if (responseStatus == 204) {
 			return false;
 		}
 		return true;
 	}
 
-	private static ContentType selectContentType(BaseContentRequest request) {
+	private static ContentType selectContentType(final BaseContentRequest request) {
 		de.jochor.lib.http4j.model.ContentType http4jContentType = request.getContentType();
-		if (http4jContentType == de.jochor.lib.http4j.model.ContentType.APPLICATION_JSON) {
-			return ContentType.APPLICATION_JSON;
-		} else {
+		if (http4jContentType == null) {
 			throw new UnknownContentTypeException(http4jContentType);
+		}
+
+		String mimeType = http4jContentType.getMimeType();
+		try {
+			ContentType contentType = ContentType.parse(mimeType);
+			return contentType;
+		} catch (ParseException e) {
+			throw new UnknownContentTypeException(http4jContentType, e);
 		}
 	}
 
-	private static String readResponse(HttpEntity entity) throws IOException {
+	private static String readResponse(final HttpEntity entity) throws IOException {
 		Charset charset = selectCharset(entity);
 
 		try (BufferedReader content = new BufferedReader(new InputStreamReader(entity.getContent(), charset))) {
@@ -232,7 +239,7 @@ public class HTTPClientApache implements HTTPClient {
 		}
 	}
 
-	private static Charset selectCharset(HttpEntity entity) {
+	private static Charset selectCharset(final HttpEntity entity) {
 		Charset charset;
 		Header encodingHeader = entity.getContentEncoding();
 		if (encodingHeader != null) {
