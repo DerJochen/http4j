@@ -22,6 +22,7 @@ public class UnknownContentTypeExceptionTest {
 		UnknownContentTypeException e = new UnknownContentTypeException(ContentType.APPLICATION_JSON);
 		Assert.assertNotNull(e);
 		Assert.assertEquals("Unknown content type: " + ContentType.APPLICATION_JSON.name(), e.getMessage());
+		Assert.assertNull(e.getOriginal());
 	}
 
 	@Test
@@ -29,6 +30,16 @@ public class UnknownContentTypeExceptionTest {
 		UnknownContentTypeException e = new UnknownContentTypeException(null);
 		Assert.assertNotNull(e);
 		Assert.assertEquals("Unknown content type: null", e.getMessage());
+		Assert.assertNull(e.getOriginal());
+	}
+
+	@Test
+	public void testUnknownContentTypeException_originalException() {
+		Exception original = new Exception();
+		UnknownContentTypeException e = new UnknownContentTypeException(ContentType.APPLICATION_JSON, original);
+		Assert.assertNotNull(e);
+		Assert.assertEquals("Unknown content type: " + ContentType.APPLICATION_JSON.name(), e.getMessage());
+		Assert.assertSame(original, e.getOriginal());
 	}
 
 }

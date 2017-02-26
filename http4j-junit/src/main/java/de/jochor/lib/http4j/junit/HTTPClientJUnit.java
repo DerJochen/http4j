@@ -51,7 +51,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * @param value
 	 *            Header value
 	 */
-	public static void addExpectedHeader(String name, String value) {
+	public static void addExpectedHeader(final String name, final String value) {
 		expectedHeaders.put(name, value);
 	}
 
@@ -75,8 +75,9 @@ public class HTTPClientJUnit implements HTTPClient {
 	 *            Response to queue
 	 * @param expectedParams
 	 *            Parameters and values to be expected (optional)
+	 * @return
 	 */
-	public static RequestHolder addResponse(String response, String... expectedParams) {
+	public static RequestHolder addResponse(final String response, final String... expectedParams) {
 		responses.add(response);
 		expectedParamArrays.add(expectedParams);
 		RequestHolder requestHolder = new RequestHolder();
@@ -98,7 +99,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String delete(DeleteRequest request) {
+	public String delete(final DeleteRequest request) {
 		int expectedStatus = request.getExpectedStatus();
 		if (expectedStatus == 204) {
 			return null;
@@ -112,7 +113,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String get(GetRequest request) {
+	public String get(final GetRequest request) {
 		String response = executeRequest(request, null);
 
 		return response;
@@ -122,7 +123,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String patch(PatchRequest request) {
+	public String patch(final PatchRequest request) {
 		String body = request.getBody();
 
 		String response = executeRequest(request, body);
@@ -134,7 +135,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String post(PostRequest request) {
+	public String post(final PostRequest request) {
 		String body = request.getBody();
 
 		String response = executeRequest(request, body);
@@ -146,7 +147,7 @@ public class HTTPClientJUnit implements HTTPClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String put(PutRequest request) {
+	public String put(final PutRequest request) {
 		String body = request.getBody();
 
 		String response = executeRequest(request, body);
@@ -154,7 +155,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return response;
 	}
 
-	protected String executeRequest(BaseRequest request, String body) {
+	protected String executeRequest(final BaseRequest request, final String body) {
 		URI uri = request.getUri();
 
 		if (responses.isEmpty()) {
@@ -191,7 +192,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return response;
 	}
 
-	private static boolean checkHeaders(HashMap<String, String> headers, boolean expect200) {
+	private static boolean checkHeaders(final HashMap<String, String> headers, final boolean expect200) {
 		for (Entry<String, String> expected : expectedHeaders.entrySet()) {
 			String name = expected.getKey();
 			String value = expected.getValue();
@@ -208,7 +209,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return true;
 	}
 
-	private static boolean checkParameters(URI uri, HashMap<String, String> queryParameters, boolean expect200) {
+	private static boolean checkParameters(final URI uri, final HashMap<String, String> queryParameters, final boolean expect200) {
 		String[] expectedParams = expectedParamArrays.peek();
 		if (expectedParams.length == 0) {
 			return true;
@@ -230,7 +231,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		return expectedParamsFound;
 	}
 
-	private static void readExpliciteParameters(HashMap<String, String> queryParameters, HashSet<String> parameters) {
+	private static void readExpliciteParameters(final HashMap<String, String> queryParameters, final HashSet<String> parameters) {
 		if (queryParameters == null) {
 			return;
 		}
@@ -242,7 +243,7 @@ public class HTTPClientJUnit implements HTTPClient {
 		}
 	}
 
-	private static void readImpliciteParameters(URI uri, HashSet<String> parameters, HashMap<String, String> queryParameters) {
+	private static void readImpliciteParameters(final URI uri, final HashSet<String> parameters, final HashMap<String, String> queryParameters) {
 		String query = uri.getQuery();
 		if (query == null) {
 			return;
@@ -250,7 +251,7 @@ public class HTTPClientJUnit implements HTTPClient {
 
 		String[] queryParts = query.split("&");
 		for (String queryPart : queryParts) {
-			int firstEquals = queryPart.indexOf("=");
+			int firstEquals = queryPart.indexOf('=');
 			String paramName = queryPart.substring(0, firstEquals);
 			if (queryParameters == null || !queryParameters.containsKey(paramName)) {
 				parameters.add(queryPart);
