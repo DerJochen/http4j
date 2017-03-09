@@ -20,10 +20,13 @@ public abstract class BaseContentRequest extends BaseRequest {
 
 	private String body;
 
+	/**
+	 * Default: application/json
+	 */
 	@Setter
 	private ContentType contentType = ContentType.APPLICATION_JSON;
 
-	protected BaseContentRequest(URI uri, String body) {
+	protected BaseContentRequest(final URI uri, final String body) {
 		super(uri);
 
 		this.body = body;

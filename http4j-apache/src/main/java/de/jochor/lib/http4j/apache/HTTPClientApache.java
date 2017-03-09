@@ -49,9 +49,6 @@ import de.jochor.lib.http4j.model.PutRequest;
  */
 public class HTTPClientApache implements HTTPClient {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String delete(final DeleteRequest request) {
 		HttpDelete httpRequest = new HttpDelete();
@@ -61,9 +58,6 @@ public class HTTPClientApache implements HTTPClient {
 		return response;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String get(final GetRequest request) {
 		HttpGet httpRequest = new HttpGet();
@@ -73,9 +67,6 @@ public class HTTPClientApache implements HTTPClient {
 		return response;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String patch(final PatchRequest request) {
 		String body = request.getBody();
@@ -91,9 +82,6 @@ public class HTTPClientApache implements HTTPClient {
 		return response;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String post(final PostRequest request) {
 		String body = request.getBody();
@@ -109,9 +97,6 @@ public class HTTPClientApache implements HTTPClient {
 		return response;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String put(final PutRequest request) {
 		String body = request.getBody();
